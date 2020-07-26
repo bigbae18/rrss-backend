@@ -20,6 +20,16 @@ Route::prefix('/users')->group(function () {
 
     // Obtener user por ID
     Route::get('/{id}', 'Api\UserController@getUserById');
+    // Obtener Followers
+    Route::get('/followers/{id}', 'Api\FollowersController@getFollowers');
+    // Obtener Followings
+    Route::get('/following/{id}', 'Api\FollowersController@getFollowing');
+
+
+    // Seguir a un user
+    Route::post('follow', 'Api\FollowersController@follow');
+    // Dejar de seguir a un user
+    Route::post('unfollow', 'Api\FollowersController@unfollow');
 
     // Borrar user por ID
     Route::delete('/delete/{id}', 'Api\UserController@deleteUserById');

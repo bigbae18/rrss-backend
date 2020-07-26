@@ -40,8 +40,10 @@ class UserController extends Controller
         }
     }
 
-    public function deleteUserById($id) {
-        $validator = Validator::make([$id], ['required|int']);
+    public function deleteUserById(Request $request) {
+        $validator = Validator::make($request->all(), ['id' => 'required|int']);
+
+        $id = $request->get('id');
 
         if ($validator->fails()) {
             return response()->json([
