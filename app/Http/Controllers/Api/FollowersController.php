@@ -12,7 +12,6 @@ class FollowersController extends Controller
     public function follow(Request $request) {
         
         $validator = Validator::make($request->all(), [
-            'follower_id' => 'required|int',
             'following_id' => 'required|int'
         ]);
         if ($validator->fails()) {
@@ -20,12 +19,13 @@ class FollowersController extends Controller
                 'message' => $validator->errors()
             ]);
         }
-        $follower_id = $request->get('follower_id');
+
+        $follower_id = Auth::id();
         $following_id = $request->get('following_id');
         
         if (User::where('id', $following_id)->exists()) {
             $following_user = User::where('id', $following_id)->get();
-            $follower_user = User::where('id', $follower_id)->get();
+            $follower_user = Auth::user();
 
             $follower_user->follower()->attach($following_user);
 
@@ -39,7 +39,6 @@ class FollowersController extends Controller
     public function unfollow(Request $request) {
         
         $validator = Validator::make($request->all(), [
-            'unfollower_id' => 'required|int',
             'unfollowing_id' => 'required|int'
         ]);
         if ($validator->fails()) {
@@ -47,12 +46,12 @@ class FollowersController extends Controller
                 'message' => $validator->errors()
             ]);
         }
-        $unfollower_id = $request->get('unfollower_id');
+        $unfollower_id = Auth::id();
         $unfollowing_id = $request->get('unfollowing_id');
         
         if (User::where('id', $unfollowing_id)->exists()) {
             $unfollowing_user = User::where('id', $unfollowing_id)->get();
-            $unfollower_user = User::where('id', $unfollower_id)->get();
+            $unfollower_user = Auth::user();
 
             $unfollower_user->follower()->dettach($unfollowing_user);
 
@@ -75,19 +74,19 @@ class FollowersController extends Controller
 
         if (User::where('id', $id)->exists()) {
             $user = User::where('id', $id)->get();
-            $followers_count = 0;
-            $followers_array = [];
-            $followers = $user->followers()->get();
+            $following_count = 0;
+            $following_array = [];
+            $followings = $user->following()->get();
 
-            foreach($followers as $follower) {
-                $follower_count++;
-                $followers_array = [...$followers_array, $follower];
+            foreach($followings as $following) {
+                $following_count++;
+                $following_array = [...$following_array, $following];
             }
             return response()->json([
                 'user' => $user,
-                'followers' => $followers,
-                'followers_count' => $follower_count,
-                'followers_array' => $followers_array
+                'following' => $following,
+                'following_count' => $follower_count,
+                'following_array' => $following_array
             ]);
         } else {
             return response()->json([
