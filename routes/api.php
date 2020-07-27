@@ -14,6 +14,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// AUTH ROUTES
+
+Route::prefix('/auth')->group(function() {
+
+    // Registro de user
+    Route::post('register', 'Api\AuthController@register');
+
+    // Auth + Login de user
+    Route::post('login', 'Api\AuthController@login');
+});
+
 // USERS ROUTES
 
 Route::prefix('/users')->group(function () {
@@ -34,12 +45,7 @@ Route::prefix('/users')->group(function () {
     // Borrar user por ID
     Route::delete('/delete/{id}', 'Api\UserController@deleteUserById');
 
-    // Registro de user
-    Route::post('register', 'Api\AuthController@register');
-
-    // Auth + Login de user
-    Route::post('login', 'Api\AuthController@login');
-});
+})->middleware('auth:api');
 
 Route::prefix('/posts')->group(function () {
 

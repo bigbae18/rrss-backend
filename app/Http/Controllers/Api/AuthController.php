@@ -27,21 +27,26 @@ class AuthController extends Controller {
                     ->json(["message" => $validator->errors()], 422);
         };
 
-        $input = $request->all();
-        $input["password"] = Hash::make($request->get('password'));
-        //bcrypt($request->get('password'));
+        if (User::where('username', $request->get('username'))->exists()) {
+            $input = $request->all();
+            $input["password"] = Hash::make($request->get('password'));
 
-        $user = User::create($input);
+            $user = User::create($input);
 
-        $token = $user->createToken($user["username"])->accessToken;
+            $token = $user->createToken($user["username"])->accessToken;
 
-        return response()
-                ->json(
-                    [
-                        'token' => $token,
-                        'user' => $user
-                    ], 200
-                );
+            return response()
+                    ->json(
+                        [
+                            'token' => $token,
+                            'user' => $user
+                        ], 200);
+        } else {
+            return response()->json([
+                "message" => "The username already exists"
+            ], 400);
+        }
+        
 
     }
 
@@ -66,17 +71,15 @@ class AuthController extends Controller {
             $credentials = $request->only('username', 'password');
             $user = User::where('username', $request->get('username'))->get();
             $user_id = User::where('username', $request->get('username'))->value('id');
+            // Obtiene token id si existe / sino null
             $token_id = (DB::table('oauth_access_tokens')->where('user_id', $user_id)->exists() ? DB::table('oauth_access_tokens')->where('user_id', $user_id)->value('id') : null);
 
             if (Hash::check($credentials["password"], User::where('username', $request->get('username'))->value('password'))) {
 
-                $authenticated = (Auth::attempt($credentials) ? true : false);
-
                 return response()->json(
                     [
                         'token_id' => $token_id,
-                        'user' => $user,
-                        'authenticated' => $authenticated
+                        'user' => $user
                     ], 202
                 );
             } else {
