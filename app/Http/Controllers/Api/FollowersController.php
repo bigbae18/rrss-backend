@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\User;
 use Validator;
 
@@ -17,22 +18,26 @@ class FollowersController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'message' => $validator->errors()
-            ]);
+            ], 400);
         }
 
-        $follower_id = Auth::id();
+        $follower_id = $request->get('follower_id');
         $following_id = $request->get('following_id');
         
         if (User::where('id', $following_id)->exists()) {
             $following_user = User::where('id', $following_id)->get();
             $follower_user = Auth::user();
 
-            $follower_user->follower()->attach($following_user);
+            $follower_user->following()->attach($following_user);
+
+            return response()->json([
+                "message" => "User followed successful"
+            ], 200);
 
         } else {
             return response()->json([
                 "message" => "User to follow doesn't exists"
-            ]);
+            ], 400);
         }
     }
 
@@ -44,21 +49,28 @@ class FollowersController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'message' => $validator->errors()
-            ]);
+            ], 400);
         }
-        $unfollower_id = Auth::id();
+
+
         $unfollowing_id = $request->get('unfollowing_id');
         
         if (User::where('id', $unfollowing_id)->exists()) {
             $unfollowing_user = User::where('id', $unfollowing_id)->get();
             $unfollower_user = Auth::user();
 
-            $unfollower_user->follower()->dettach($unfollowing_user);
+            dd(unfollower_user);
+
+            $unfollower_user->following()->dettach($unfolling_user);
+
+            return response()->json([
+                "message" => "User unfollow"
+            ],200);
 
         } else {
             return response()->json([
                 "message" => "User to unfollow doesn't exists"
-            ]);
+            ], 400);
         }
     }
 
@@ -69,7 +81,7 @@ class FollowersController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'message' => $validator->errors()
-            ]);
+            ], 400);
         }
 
         if (User::where('id', $id)->exists()) {
@@ -87,11 +99,11 @@ class FollowersController extends Controller
                 'following' => $following,
                 'following_count' => $follower_count,
                 'following_array' => $following_array
-            ]);
+            ], 200);
         } else {
             return response()->json([
                 'message' => "User doesn't exist"
-            ]);
+            ], 400);
         }
     }
 
@@ -102,7 +114,7 @@ class FollowersController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'message' => $validator->errors()
-            ]);
+            ], 400);
         }
 
         if (User::where('id', $id)->exists()) {
@@ -120,11 +132,11 @@ class FollowersController extends Controller
                 'followers' => $followers,
                 'followers_count' => $follower_count,
                 'followers_array' => $followers_array
-            ]);
+            ], 200);
         } else {
             return response()->json([
                 'message' => "User doesn't exist"
-            ]);
+            ], 400);
         }
     }
 }
