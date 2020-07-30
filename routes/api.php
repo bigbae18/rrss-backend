@@ -45,7 +45,7 @@ Route::prefix('/users')->group(function () {
     // Borrar user por ID
     Route::delete('/delete/{id}', 'Api\UserController@deleteUserById');
 
-});//->middleware('api:auth')
+})->middleware('auth:api');
 
 
 Route::prefix('/posts')->group(function () {
