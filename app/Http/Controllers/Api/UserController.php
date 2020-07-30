@@ -53,7 +53,6 @@ class UserController extends Controller
         }
 
         if (User::where('id', $id)->exists()) {
-
             User::where('id', $id)->delete();
             if (!User::where('id', $id)->exists()) {
                 return response()->json([

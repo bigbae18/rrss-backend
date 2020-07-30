@@ -32,9 +32,9 @@ Route::prefix('/users')->group(function () {
     // Obtener user por ID
     Route::get('/{id}', 'Api\UserController@getUserById');
     // Obtener Followers
-    Route::get('/followers/{id}', 'Api\FollowersController@getFollowers');
+    Route::get('followers', 'Api\FollowersController@getFollowers');
     // Obtener Followings
-    Route::get('/following/{id}', 'Api\FollowersController@getFollowing');
+    Route::get('following', 'Api\FollowersController@getFollowing');
 
 
     // Seguir a un user

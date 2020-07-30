@@ -40,7 +40,7 @@ class AuthController extends Controller {
             }
         } catch(\Exception $e){
             return response()->json([
-                'message' => 'There was an error trying to register user',
+                'message' => 'Error trying to register user',
                 'error' => $e->getMessage()
             ], 500);
         }
@@ -78,7 +78,6 @@ class AuthController extends Controller {
                 $token = $user->createToken($credentials["username"])->accessToken;
                 $user->token = $token;
                 return response()->json([
-                    'token' => $token,
                     'user' => $user,
                     'authorized' => Auth::check()
                 ],200);
