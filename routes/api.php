@@ -27,14 +27,14 @@ Route::prefix('auth')->group(function() {
 
 // USERS ROUTES
 
-Route::prefix('/users')->group(function () {
+Route::middleware('auth:api')->prefix('/users')->group(function () {
 
     // Obtener user por ID
     Route::get('/{id}', 'Api\UserController@getUserById');
     // Obtener Followers
-    Route::get('followers', 'Api\FollowersController@getFollowers');
+    Route::get('followers/{id}', 'Api\FollowersController@getFollowers');
     // Obtener Followings
-    Route::get('following', 'Api\FollowersController@getFollowing');
+    Route::get('following/{id}', 'Api\FollowersController@getFollowing');
 
 
     // Seguir a un user
@@ -45,7 +45,7 @@ Route::prefix('/users')->group(function () {
     // Borrar user por ID
     Route::delete('/delete/{id}', 'Api\UserController@deleteUserById');
 
-})->middleware('auth:api');
+});
 
 
 Route::prefix('/posts')->group(function () {
