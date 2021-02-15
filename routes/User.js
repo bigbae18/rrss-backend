@@ -57,26 +57,27 @@ router.post('/login', (req, res) => {
     db.query(loginQuery, username, (error, result) => {
         if (error) {
             console.log(error)
+            res.status(500).json({
+                loggedIn: false,
+                username: username
+            })
         }
         if (result.length > 0) {
-            if (bcrypt.compare(password, results[0].password)) {
-                res.json({ 
+            if (bcrypt.compare(password, result[0].password)) {
+                res.status(200).json({ 
                     loggedIn: true, 
-                    username: username,
-                    code: 200
+                    username: username
                 })
             } else {
-                res.json({ 
+                res.status(401).json({ 
                     loggedIn: false, 
-                    message: "User/password does not match!",
-                    code: 401
+                    message: "User/password does not match!"
                 })
             }
         } else {
-            res.json({ 
+            res.status(400).json({ 
                 loggedIn: false, 
-                message: "User does not exist!",
-                code: 401
+                message: "User does not exist!"
             })
         }
     }) 
