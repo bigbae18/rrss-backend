@@ -36,4 +36,20 @@ router.post('/', (req, res) => {
     })
 })
 
+router.get('/byUser/:username', (req, res) => {
+    const username = req.params.username;
+
+    const getPostsQuery = "SELECT * FROM Posts WHERE author = ? ORDER BY `created_at` DESC;";
+
+    db.query(getPostsQuery, [username], (error, result) => {
+        if (error) {
+            console.error(error);
+            res.status(500).json({
+                message: "There was an error creating your post"
+            })
+        }
+        res.status(200).send(result);
+    })
+})
+
 module.exports = router;

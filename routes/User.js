@@ -103,6 +103,8 @@ router.get('/id/:id', (req, res) => {
                 message: "User not found."
             })
         }
+
+        console.log(result);
         
         const { id, username, email } = result[0];
 
